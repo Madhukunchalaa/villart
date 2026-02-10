@@ -227,28 +227,53 @@ document.querySelectorAll('.film-frame, .service-item').forEach(item => {
 // Contact Form "Camera Capture" Effect
 const contactForm = document.getElementById('contactForm');
 const popup = document.getElementById('thankyou-popup');
-const popupFrame = document.querySelector('.polaroid-frame');
 
 if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        // 1. Trigger Flash
+        // 1. Capture Data
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const mobile = document.getElementById('mobile').value;
+        const message = document.getElementById('message').value;
+
+        // 2. Populate Popup
+        document.getElementById('pop-name').textContent = name;
+        document.getElementById('pop-email').textContent = email;
+        document.getElementById('pop-mobile').textContent = mobile;
+        document.getElementById('pop-message').textContent = message;
+
+        // 3. Trigger Flash
         const flash = document.getElementById('camera-flash');
         if (flash) {
             flash.classList.add('flash-active');
             setTimeout(() => flash.classList.remove('flash-active'), 400); // Reset
         }
         
-        // 2. Show "Appearing" Popup after brief delay (like processing)
+        // 4. Show "Appearing" Popup
         setTimeout(() => {
             popup.classList.add('active');
         }, 300);
         
-        // 3. Close Popup on click
-        popup.addEventListener('click', () => {
-            popup.classList.remove('active');
-            contactForm.reset();
+        // 5. Close Popup interaction
+        const closeBtn = document.querySelector('.close-popup');
+        
+        // Close on X click
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent double trigger
+                popup.classList.remove('active');
+                contactForm.reset();
+            });
+        }
+
+        // Close on background click (optional, keeping for UX)
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) {
+                popup.classList.remove('active');
+                contactForm.reset();
+            }
         });
     });
 }
