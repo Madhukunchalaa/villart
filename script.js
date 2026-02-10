@@ -113,22 +113,34 @@ closeBtn.addEventListener('click', () => {
     document.body.style.overflow = 'auto'; // Re-enable scroll
 });
 
-// Gallery Filter Logic
+// Gallery Filter & Load More Logic
 const filterBtns = document.querySelectorAll('.filter-btn');
 const galleryItems = document.querySelectorAll('.masonry-item');
+const loadMoreBtn = document.getElementById('loadMoreBtn');
+const BATCH_SIZE = 6;
+let currentCategory = 'all';
+let visibleCount = BATCH_SIZE;
 
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Remove active class
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        const filterValue = btn.getAttribute('data-filter');
-        
-        galleryItems.forEach(item => {
-            if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
-                item.style.display = 'block';
-                // Trigger animation for smooth transition
+// Function to update gallery visibility
+const updateGallery = () => {
+    let filteredItems = [];
+    
+    // 1. Filter Items
+    galleryItems.forEach(item => {
+        const itemCategory = item.getAttribute('data-category');
+        if (currentCategory === 'all' || itemCategory === currentCategory) {
+            filteredItems.push(item);
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
+    // 2. Handle Pagination
+    filteredItems.forEach((item, index) => {
+        if (index < visibleCount) {
+            item.style.display = 'block';
+            // Animation for appearance
+            if (item.style.opacity !== '1') {
                 item.style.opacity = '0';
                 item.style.transform = 'translateY(20px)';
                 setTimeout(() => {
@@ -136,13 +148,41 @@ filterBtns.forEach(btn => {
                     item.style.opacity = '1';
                     item.style.transform = 'translateY(0)';
                 }, 50);
-
-            } else {
-                item.style.display = 'none';
             }
-        });
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
+    // 3. Toggle Load More Button
+    if (visibleCount >= filteredItems.length) {
+        loadMoreBtn.classList.add('hidden');
+    } else {
+        loadMoreBtn.classList.remove('hidden');
+    }
+};
+
+// Initialize
+updateGallery();
+
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Remove active class
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        currentCategory = btn.getAttribute('data-filter');
+        visibleCount = BATCH_SIZE; // Reset count on filter change
+        updateGallery();
     });
 });
+
+if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', () => {
+        visibleCount += BATCH_SIZE;
+        updateGallery();
+    });
+}
 
 
 lightbox.addEventListener('click', (e) => {

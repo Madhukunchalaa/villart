@@ -617,7 +617,56 @@ nav {
     opacity: 1;
 }
 
-/* Responsiveness */
+/* Load More Button */
+.load-more-container {
+    text-align: center;
+    margin-top: 60px;
+}
+
+.load-more-btn {
+    background: transparent;
+    border: 1px solid var(--accent-color);
+    color: #fff;
+    padding: 15px 40px;
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 50px; /* Pill shape */
+}
+
+.load-more-btn .circle-icon {
+    width: 30px;
+    height: 30px;
+    background: var(--accent-color);
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: transform 0.4s ease;
+}
+
+.load-more-btn:hover {
+    background: rgba(212, 175, 55, 0.1);
+    padding-right: 50px; /* Slight expansion */
+}
+
+.load-more-btn:hover .circle-icon {
+    transform: rotate(90deg);
+}
+
+.load-more-btn.hidden {
+    display: none;
+}
 /* About Section */
 .about {
     padding: 100px 50px;
