@@ -299,3 +299,46 @@ document.querySelectorAll('.section-header, .quote-text, .testimonial-editorial'
     }, { threshold: 0.1 }).observe(el);
 });
 
+// Page Transition (Camera Flash) Logic
+const initPageTransition = () => {
+    // 1. Ensure flash element exists
+    let flash = document.getElementById('camera-flash');
+    if (!flash) {
+        flash = document.createElement('div');
+        flash.id = 'camera-flash';
+        document.body.appendChild(flash);
+    }
+
+    // 2. Add click listeners to all internal links
+    document.querySelectorAll('a').forEach(link => {
+        const href = link.getAttribute('href');
+        
+        // Skip if:
+        // - No href
+        // - Anchor link (keeps on same page)
+        // - External link (starts with http, though we could animate this too)
+        // - Has target="_blank"
+        if (!href || href.startsWith('#') || link.target === '_blank') return;
+        
+        link.addEventListener('click', (e) => {
+            e.preventDefault(); // Stop immediate nav
+            
+            // Trigger Flash
+            flash.classList.remove('flash-active');
+            void flash.offsetWidth; // Force reflow
+            flash.classList.add('flash-active');
+            
+            // Wait for flash peak (approx 100ms-200ms) then navigate
+            setTimeout(() => {
+                window.location.href = href;
+            }, 400); // 400ms matches css animation duration
+        });
+    });
+};
+
+// Initialize Transition Logic
+document.addEventListener('DOMContentLoaded', () => {
+    initPageTransition();
+});
+
+// Re-run for dynamic content (if any, separate from DOMContentLoaded)
